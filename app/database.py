@@ -7,5 +7,8 @@ products_db: list[dict] = [
 
 categories_db = [
     {"id": 1, "name": "Computadores", "description": "Equipos de cómputo", "active": True},
-    {"id": 2, "name": "Accesorios", "description": "Periféricos y complementos", "active": True}
+    {"id": 2, "name": "Accesorios", "description": "Periféricos y complementos", "active": False},
+    {"id": 3, "name": "Monitores", "description": "Pantallas y visores", "active": True},
+    {"id": 4, "name": "Almacenamiento", "description": "Discos duros y estados sólidos", "active": False},
+    {"id": 5, "name": "Audio", "description": "Audífonos y micrófonos", "active": True}
 ]
