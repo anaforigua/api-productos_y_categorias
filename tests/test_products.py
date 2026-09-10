@@ -13,18 +13,21 @@ def reset_products_db():
     products_db.clear()
     products_db.extend(INITIAL_PRODUCTS)
 
+# Tipo: Integración | Naturaleza: Positiva (Prueba el estado de salud de la API esperando un código 200)
 def test_health():
     endpoint = "/health"
     response = client.get(endpoint)
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
     
+# Tipo: Integración | Naturaleza: Positiva (Consulta la lista completa de productos esperando código 200)
 def test_get_products():
     response = client.get("/products")
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
     
+# Tipo: Integración | Naturaleza: Positiva (Consulta un producto existente por ID esperando código 200)
 def test_get_existing_products():
     response = client.get("/products/1")
     assert response.status_code == 200
@@ -32,29 +35,34 @@ def test_get_existing_products():
     assert data["id"] == 1
     assert "name" in data
     
+# Tipo: Integración | Naturaleza: Negativa (Consulta un producto que no existe esperando un error 404)
 def test_get_non_existing_product():
     response = client.get("/products/9999")
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Product not found"
     
+# Tipo: Integración | Naturaleza: Negativa (Envía un ID inválido con letras esperando un error de validación 422)
 def test_invalid_product_id():
     response = client.get("/products/abc")
     assert response.status_code == 422
     assert "detail" in response.json()
     
+# Tipo: Integración | Naturaleza: Positiva (Filtra los productos activos mediante parámetros de consulta esperando código 200)
 def test_filter_active_products():
     response = client.get("/products?active=true")
     assert response.status_code == 200
     data = response.json()
     assert all(product["active"] is True for product in data)
    
+# Tipo: Integración | Naturaleza: Positiva (Filtra los productos por categoría específica esperando código 200)
 def test_filter_products_by_category():
     response = client.get("/products?category=electronics")
     assert response.status_code == 200
     data = response.json()
     assert all(product["category"] == "electronics" for product in data)
 
+# Tipo: Integración | Naturaleza: Positiva (Crea un nuevo producto exitosamente enviando datos correctos esperando un código 201)
 def test_create_product():
     new_product = {
         "name": "New Product",
@@ -72,6 +80,7 @@ def test_create_product():
     assert data["price"] == new_product["price"]
     assert data["stock"] == new_product["stock"]
     
+# Tipo: Integración | Naturaleza: Negativa (Intenta crear un producto con un precio negativo esperando que la API lo rechace con un código 422)
 def test_create_product_negative_price():
     new_product = {
         "name": "New Product",
@@ -84,12 +93,12 @@ def test_create_product_negative_price():
     assert response.status_code == 422
     data = response.json()
     assert "detail" in data
-    # Verificamos que el error corresponda al campo price sin restringir la cadena exacta del mensaje
     assert any(
         error["loc"][-1] == "price" 
         for error in data["detail"]
     )
     
+# Tipo: Integración | Naturaleza: Positiva (Actualiza completamente un producto existente mediante PUT esperando código 200)
 def test_update_product():
     updated_product = {
         "name": "Updated Product",
@@ -107,6 +116,7 @@ def test_update_product():
     assert data["price"] == updated_product["price"]
     assert data["stock"] == updated_product["stock"]
     
+# Tipo: Integración | Naturaleza: Positiva (Actualiza parcialmente el precio de un producto mediante PATCH esperando código 200)
 def test_update_price_patch():
     updated_price = {
         "price": 75.0
@@ -116,6 +126,7 @@ def test_update_price_patch():
     data = response.json()
     assert data["price"] == updated_price["price"]
     
+# Tipo: Integración | Naturaleza: Negativa (Intenta actualizar un producto que no existe esperando un error 404)
 def test_update_non_existing_product():
     updated_product = {
         "name": "Updated Product",
@@ -130,6 +141,7 @@ def test_update_non_existing_product():
     assert "detail" in data
     assert data["detail"] == "Product not found"
     
+# Tipo: Integración | Naturaleza: Positiva (Elimina un producto existente mediante DELETE esperando un código 200)
 def test_delete_product():
     response = client.delete("/products/1")
     assert response.status_code == 200
