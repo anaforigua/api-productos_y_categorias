@@ -54,7 +54,7 @@ def test_filter_active_products():
     assert response.status_code == 200
     data = response.json()
     assert all(product["active"] is True for product in data)
-   
+  
 # Tipo: Integración | Naturaleza: Positiva (Filtra los productos por categoría específica esperando código 200)
 def test_filter_products_by_category():
     response = client.get("/products?category=Accesorios")
@@ -147,3 +147,20 @@ def test_delete_product():
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == 1
+
+# Tipo: Integración | Naturaleza: Negativa y Frontera | Parametrizada (Valida múltiples escenarios de error por datos inválidos en la creación de productos, esperando un código 422)
+@pytest.mark.parametrize(
+    "payload",
+    [
+        # Nombre menor a 3 caracteres (Frontera negativa)
+        {"name": "Ab", "category": "Accesorios", "price": 50.0, "stock": 10, "active": True},
+        # Precio menor o igual a cero (Negativa / Frontera)
+        {"name": "Producto", "category": "Accesorios", "price": 0.0, "stock": 10, "active": True},
+        # Stock negativo (Negativa)
+        {"name": "Producto", "category": "Accesorios", "price": 50.0, "stock": -3, "active": True},
+    ]
+)
+def test_create_product_validation_parametrized(payload):
+    response = client.post("/products", json=payload)
+    assert response.status_code == 422
+    assert "detail" in response.json()

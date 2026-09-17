@@ -90,3 +90,18 @@ def test_filter_active_categories():
     assert response.status_code == 200
     data = response.json()
     assert all(c["active"] is True for c in data)
+
+# Tipo: Integración | Naturaleza: Negativa y Frontera | Parametrizada (Valida múltiples escenarios de error por datos inválidos en la creación de categorías, esperando un código 422)
+@pytest.mark.parametrize(
+    "payload",
+    [
+        # Nombre menor al límite permitido (Frontera negativa)
+        {"name": "Hi", "description": "Muy corto", "active": True},
+        # Omisión de campo obligatorio (Negativa)
+        {"description": "Sin nombre", "active": True},
+    ]
+)
+def test_create_category_validation_parametrized(payload):
+    response = client.post("/categories", json=payload)
+    assert response.status_code == 422
+    assert "detail" in response.json()

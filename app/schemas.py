@@ -4,7 +4,7 @@ from app.database import categories_db
 
 # 1. Esquema base para los campos comunes del producto
 class ProductBase(BaseModel):
-    name: str = Field(..., min_length=2,max_length=80, example="Product Name")
+    name: str = Field(..., min_length=4,max_length=80, example="Product Name")
     price: float = Field(..., gt=0, example=99.99)
     active: bool = Field(..., example=True)
     stock: int = Field(..., ge=0, example=10)
