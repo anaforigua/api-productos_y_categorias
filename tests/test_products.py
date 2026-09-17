@@ -57,16 +57,16 @@ def test_filter_active_products():
    
 # Tipo: Integración | Naturaleza: Positiva (Filtra los productos por categoría específica esperando código 200)
 def test_filter_products_by_category():
-    response = client.get("/products?category=electronics")
+    response = client.get("/products?category=Accesorios")
     assert response.status_code == 200
     data = response.json()
-    assert all(product["category"] == "electronics" for product in data)
+    assert all(product["category"] == "Accesorios" for product in data)
 
 # Tipo: Integración | Naturaleza: Positiva (Crea un nuevo producto exitosamente enviando datos correctos esperando un código 201)
 def test_create_product():
     new_product = {
         "name": "New Product",
-        "category": "electronics",
+        "category": "Accesorios",
         "price": 100.0,
         "stock": 10,
         "active": True
@@ -84,7 +84,7 @@ def test_create_product():
 def test_create_product_negative_price():
     new_product = {
         "name": "New Product",
-        "category": "electronics",
+        "category": "Accesorios",
         "price": -10,
         "stock": 5,
         "active": True
@@ -102,7 +102,7 @@ def test_create_product_negative_price():
 def test_update_product():
     updated_product = {
         "name": "Updated Product",
-        "category": "electronics",
+        "category": "Accesorios",
         "price": 50.0,
         "stock": 10,
         "active": False
@@ -130,7 +130,7 @@ def test_update_price_patch():
 def test_update_non_existing_product():
     updated_product = {
         "name": "Updated Product",
-        "category": "electronics",
+        "category": "Accesorios",
         "price": 50.0,
         "stock": 10,
         "active": False

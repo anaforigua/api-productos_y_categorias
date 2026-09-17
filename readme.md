@@ -287,7 +287,7 @@ La suite real de categorías ejecutó los 12 casos y todos finalizaron como `PAS
 | PR04 | Obtener producto inexistente       | `GET /products/9999` → `404`         | PASS      |
 | PR05 | Validar ID de producto inválido    | `GET /products/abc` → `422`          | PASS      |
 | PR06 | Filtrar productos activos          | `GET /products?active=true`          | PASS      |
-| PR07 | Filtrar productos por categoría    | `GET /products?category=electronics` | PASS      |
+| PR07 | Filtrar productos por categoría    | `GET /products?category=Accesorios` | PASS      |
 | PR08 | Crear producto válido              | `POST /products` → `201`             | PASS      |
 | PR09 | Crear producto con precio negativo | `POST /products` → `422`             | PASS      |
 | PR10 | Actualizar producto                | `PUT /products/1` → `200`            | PASS      |
@@ -444,7 +444,7 @@ Ejemplos:
 
 ```text
 GET /products?active=true
-GET /products?category=electronics
+GET /products?category=Accesorios
 GET /categories?active=true
 ```
 
