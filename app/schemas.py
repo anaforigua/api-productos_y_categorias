@@ -4,7 +4,7 @@ from app.database import categories_db
 
 # 1. Esquema base para los campos comunes del producto
 class ProductBase(BaseModel):
-    name: str = Field(..., min_length=2, example="Product Name")
+    name: str = Field(..., min_length=2,max_length=80, example="Product Name")
     price: float = Field(..., gt=0, example=99.99)
     active: bool = Field(..., example=True)
     stock: int = Field(..., ge=0, example=10)
@@ -30,7 +30,7 @@ class Product(ProductBase):
 
 # 4. Esquema para ACTUALIZAR
 class ProductUpdate(BaseModel):
-    name: str | None = Field(None, min_length=4, example="Product Name")
+    name: str | None = Field(None, min_length=4,max_length=80, example="Product Name")
     price: float | None = Field(None, gt=0, example=99.99)
     active: bool | None = Field(None, example=True)
     stock: int | None = Field(None, ge=0, example=10)
@@ -51,7 +51,7 @@ class ProductUpdate(BaseModel):
 # ESQUEMAS PARA CATEGORÍAS
 # ==========================================
 class CategoryBase(BaseModel):
-    name: str = Field(..., min_length=3, max_length=50, description="Nombre de la categoría")
+    name: str = Field(..., min_length=3, max_length=60, description="Nombre de la categoría")
     description: Optional[str] = Field(None, max_length=200, description="Descripción opcional")
     active: bool = Field(True, description="Estado de la categoría")
 
@@ -59,7 +59,7 @@ class CategoryCreate(CategoryBase):
     pass
 
 class CategoryUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=3, max_length=50)
+    name: Optional[str] = Field(None, min_length=3, max_length=60)
     description: Optional[str] = Field(None, max_length=200)
     active: Optional[bool] = None
 
