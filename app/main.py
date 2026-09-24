@@ -14,7 +14,7 @@ app = FastAPI(
 def read_root():
     return {"mensaje": "hi World api functional"}
 
-@app.get("/products", response_model=list[Product])
+@app.get("/products", response_model=list[Product],)
 def get_products(category: str | None = None, active: bool | None = None, search: str | None = None):
     result = products_db
     

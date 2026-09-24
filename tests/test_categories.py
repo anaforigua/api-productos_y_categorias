@@ -105,3 +105,23 @@ def test_create_category_validation_parametrized(payload):
     response = client.post("/categories", json=payload)
     assert response.status_code == 422
     assert "detail" in response.json()
+
+# Tipo: Integración | Naturaleza: Frontera | Parametrizada (Valida los 3 casos límite clave: inferior inválido, inferior válido y superior inválido)
+@pytest.mark.parametrize(
+    "payload, expected_status",
+    [
+        # 1. Frontera inferior inválida (2 caracteres, por debajo del mínimo permitido)
+        ({"name": "Ab", "description": "Frontera inferior inválida", "active": True}, 422),
+        # 2. Frontera inferior válida (3 caracteres, límite mínimo exacto)
+        ({"name": "Abc", "description": "Frontera inferior válida", "active": True}, 201),
+        # 3. Frontera superior inválida (51 caracteres, superando el límite máximo)
+        ({"name": "A" * 51, "description": "Frontera superior inválida", "active": True}, 422),
+    ]
+)
+def test_category_boundary_cases(payload, expected_status):
+    response = client.post("/categories", json=payload)
+    assert response.status_code == expected_status
+    if expected_status == 201:
+        assert "id" in response.json()
+    else:
+        assert "detail" in response.json()
