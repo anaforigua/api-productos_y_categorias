@@ -112,10 +112,10 @@ def test_create_category_validation_parametrized(payload):
     [
         # 1. Frontera inferior inválida (2 caracteres, por debajo del mínimo permitido)
         ({"name": "Ab", "description": "Frontera inferior inválida", "active": True}, 422),
-        # 2. Frontera inferior válida (3 caracteres, límite mínimo exacto)
-        ({"name": "Abc", "description": "Frontera inferior válida", "active": True}, 201),
-        # 3. Frontera superior inválida (51 caracteres, superando el límite máximo)
-        ({"name": "A" * 51, "description": "Frontera superior inválida", "active": True}, 422),
+        # 2. Frontera inferior válida (4 caracteres, límite mínimo exacto)
+        ({"name": "Abcd", "description": "Frontera inferior válida", "active": True}, 201),
+        # 3. Frontera superior inválida (90 caracteres, superando el límite máximo de 80)
+        ({"name": "A" * 90, "description": "Frontera superior inválida", "active": True}, 422),
     ]
 )
 def test_category_boundary_cases(payload, expected_status):

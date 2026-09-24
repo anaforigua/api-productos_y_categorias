@@ -10,11 +10,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.get("/")
+@app.get("/",tags=["Productos"])
 def read_root():
     return {"mensaje": "hi World api functional"}
 
-@app.get("/products", response_model=list[Product],)
+@app.get("/products", response_model=list[Product],tags=["Productos"])
 def get_products(category: str | None = None, active: bool | None = None, search: str | None = None):
     result = products_db
     
@@ -41,7 +41,7 @@ def get_products(category: str | None = None, active: bool | None = None, search
         
     return result
 
-@app.get("/products/{product_id}", response_model=Product)
+@app.get("/products/{product_id}", response_model=Product,tags=["Productos"])
 def get_product_by_id(product_id: int):
     product = next((product for product in products_db if product["id"] == product_id), None)
     if product is None:
@@ -53,13 +53,13 @@ def get_next_product_id() -> int:
         return 1
     return max(product["id"] for product in products_db) + 1
 
-@app.post("/products", response_model=Product, status_code=status.HTTP_201_CREATED)
+@app.post("/products", response_model=Product, status_code=status.HTTP_201_CREATED,tags=["Productos"])
 def create_product(product: ProductCreate):
     new_product = { "id": get_next_product_id(), **product.model_dump() } 
     products_db.append(new_product)
     return new_product
 
-@app.patch("/products/{product_id}", response_model=Product)
+@app.patch("/products/{product_id}", response_model=Product,tags=["Productos"])
 def update_product(product_id: int, product_update: ProductUpdate):
     product = next((product for product in products_db if product["id"] == product_id), None)
     if product is None:
@@ -71,7 +71,7 @@ def update_product(product_id: int, product_update: ProductUpdate):
     
     return product
 
-@app.put("/products/{product_id}", response_model=Product)
+@app.put("/products/{product_id}", response_model=Product,tags=["Productos"])
 def replace_product(product_id: int, product: ProductCreate):
     index = next((i for i, p in enumerate(products_db) if p["id"] == product_id), None)
     if index is None:
@@ -81,7 +81,7 @@ def replace_product(product_id: int, product: ProductCreate):
     products_db[index] = updated_product
     return updated_product
 
-@app.delete("/products/{product_id}", response_model=Product)
+@app.delete("/products/{product_id}", response_model=Product,tags=["Productos"])
 def delete_product(product_id: int):
     global products_db
     product = next((product for product in products_db if product["id"] == product_id), None)
@@ -93,7 +93,7 @@ def delete_product(product_id: int):
 
 
 # --- Endpoints de Categorías ---
-@app.get("/categories", response_model=List[Category])
+@app.get("/categories", response_model=List[Category],tags=["Categorías"])
 def get_categories(active: Optional[bool] = None, search: Optional[str] = None):
     results = categories_db
     if active is not None:
@@ -102,14 +102,14 @@ def get_categories(active: Optional[bool] = None, search: Optional[str] = None):
         results = [c for c in results if search.lower() in c["name"].lower()]
     return results
 
-@app.get("/categories/{category_id}", response_model=Category)
+@app.get("/categories/{category_id}", response_model=Category,tags=["Categorías"])
 def get_category(category_id: int):
     category = next((c for c in categories_db if c["id"] == category_id), None)
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     return category
 
-@app.post("/categories", response_model=Category, status_code=status.HTTP_201_CREATED)
+@app.post("/categories", response_model=Category, status_code=status.HTTP_201_CREATED,tags=["Categorías"])
 def create_category(category: CategoryCreate):
     new_id = max([c["id"] for c in categories_db], default=0) + 1
     new_category = {
@@ -121,7 +121,7 @@ def create_category(category: CategoryCreate):
     categories_db.append(new_category)
     return new_category
 
-@app.patch("/categories/{category_id}", response_model=Category)
+@app.patch("/categories/{category_id}", response_model=Category,tags=["Categorías"])
 def update_category(category_id: int, category: CategoryUpdate):
     index = next((i for i, c in enumerate(categories_db) if c["id"] == category_id), None)
     if index is None:
@@ -133,7 +133,7 @@ def update_category(category_id: int, category: CategoryUpdate):
     categories_db[index] = updated_category
     return updated_category
 
-@app.delete("/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT,tags=["Categorías"])
 def delete_category(category_id: int):
     index = next((i for i, c in enumerate(categories_db) if c["id"] == category_id), None)
     if index is None:
